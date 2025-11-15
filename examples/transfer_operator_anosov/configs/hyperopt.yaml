@@ -1,0 +1,41 @@
+# Script for hyperparameter tuning
+using Hyperopt
+
+function run_hyperopt()
+    ho = @hyperopt for i=50,
+        sampler = RandomSampler(),
+        
+        learning_rate = exp10.(LinRange(-4, -2.5, 50)),
+        hidden_size = [1024, 2048, 4096],
+        n_basis = [100, 200, 300],
+        λ_operator = [0.5, 1.0, 2.0],
+        λ_invariance = LinRange(0.01, 0.5, 50),
+        λ_aec_in = LinRange(0.01, 0.5, 50),
+        λ_aec_out = LinRange(0.01, 0.5, 50),
+        λ_sparsity = exp10.(LinRange(-3, -1, 50))
+        
+        # Create temporary config
+        config = load_config("../configs/default.yaml")
+        config.learning_rate = learning_rate
+        config.hidden_size = hidden_size
+        config.n_basis = n_basis
+        config.λ_operator = λ_operator
+        config.λ_invariance = λ_invariance
+        config.λ_aec_in = λ_aec_in
+        config.λ_aec_out = λ_aec_out
+        config.λ_sparsity = λ_sparsity
+        config.epochs = 10000  # Shorter for hyperopt
+        
+        # Save temp config
+        temp_config_path = "/tmp/hyperopt_config_$i.yaml"
+        save_config(config, temp_config_path)
+        
+        # Train
+        val_loss = train_sabon(temp_config_path; run_name="hyperopt_$i")
+        
+        # Return validation loss to minimize
+        val_loss
+    end
+    
+    return ho
+end

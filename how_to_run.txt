@@ -1,0 +1,9 @@
+First, instantiate the project so that the packages are installed
+
+Then, to generate data run
+
+julia --project=../../../ generate_data.jl --n_functions 3000 --n_grid 100 --max_order 4
+
+Now to train the model we should run
+
+julia --project=. scripts/run_experiment.jl examples/transfer_operator_anosov

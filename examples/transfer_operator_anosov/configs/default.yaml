@@ -1,0 +1,48 @@
+# Example: Transfer Operator on 4D Torus
+input_dim: 4
+output_dim: 1
+
+# Data
+n_train: 2000
+n_val: 500
+n_test: 500
+n_grid: 100
+
+# Model
+n_basis: 200
+hidden_size: 2048
+n_hidden_layers: 5
+
+# Training
+epochs: 200000
+learning_rate: 0.0003
+batch_size: 32
+
+# Loss terms
+use_operator_loss: true
+use_invariance_loss: true
+use_aec_in_loss: true
+use_aec_out_loss: true
+use_sparsity_loss: true
+
+lambda_operator: 1.0
+lambda_invariance: 0.1
+lambda_aec_in: 0.1
+lambda_aec_out: 0.1
+lambda_sparsity: 0.01
+
+# Device
+device: "auto"
+
+# Data file
+data_filename: "transfer_operator_data.jld2"
+
+# Wandb
+use_wandb: true
+wandb_project: "sabon-transfer-operator-4d"
+wandb_tags: ["transfer_operator", "4d", "anosov"]
+
+# Example-specific parameters
+example_params:
+  delta: 0.01  # Perturbation parameter for cat map
+  max_fourier_order: 7
